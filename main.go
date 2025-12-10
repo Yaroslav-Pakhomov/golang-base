@@ -1,12 +1,12 @@
 package main
 
-import "golang-base/pkg/mathAct"
+import "golang-base/pkg/varConst"
 
 func main() {
 	// fmt.Println("Hello Go.")
 	// fmt.Println("My name is Иван.")
 	// fmt.Println("I’m starting to learn Go!")
-	//
+
 	// // Переменные и конкатенация строк
 	// greeting.Greeting()
 	// // Ввод данных от пользователя
@@ -15,5 +15,9 @@ func main() {
 	// Арифметические действия
 	// mathAct.Summa()
 	// mathAct.Calculator()
-	mathAct.ArithmeticMean()
+	// mathAct.ArithmeticMean()
+
+	// Переменные разных типов и константы
+	varConst.SetVars()
+	varConst.SetConst()
 }
