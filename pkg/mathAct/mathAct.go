@@ -49,6 +49,7 @@ func Calculator() {
 	}
 }
 
+// ArithmeticMean - Среднее арифметическое 4-ёх чисел
 func ArithmeticMean() {
 	var a, b, c, d int
 
@@ -58,5 +59,5 @@ func ArithmeticMean() {
 	fmt.Scan(&c)
 	fmt.Scan(&d)
 
-	fmt.Println("Среднее ариыметическое 4-ёх чисел равно:", (a+b+c+d)/4)
+	fmt.Println("Среднее арифметическое 4-ёх чисел равно:", (a+b+c+d)/4)
 }

@@ -1,6 +1,6 @@
 package main
 
-import "golang-base/pkg/varConst"
+import "golang-base/pkg/ifElse"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -18,6 +18,9 @@ func main() {
 	// mathAct.ArithmeticMean()
 
 	// Переменные разных типов и константы
-	varConst.SetVars()
-	varConst.SetConst()
+	// varConst.SetVars()
+	// varConst.SetConst()
+
+	// Оператор if / else
+	ifElse.GetEven()
 }
