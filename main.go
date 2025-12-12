@@ -1,6 +1,6 @@
 package main
 
-import "golang-base/pkg/ifElse"
+import "golang-base/pkg/loop"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -22,5 +22,9 @@ func main() {
 	// varConst.SetConst()
 
 	// Оператор if / else
-	ifElse.GetEven()
+	// ifElse.GetEven()
+
+	// Циклы for
+	// loop.GetLoop()
+	loop.GetPracticeLoop()
 }
