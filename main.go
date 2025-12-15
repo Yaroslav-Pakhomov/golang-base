@@ -1,6 +1,6 @@
 package main
 
-import "golang-base/pkg/loop"
+import "golang-base/pkg/function"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -26,5 +26,9 @@ func main() {
 
 	// Циклы for
 	// loop.GetLoop()
-	loop.GetPracticeLoop()
+	// loop.GetPracticeLoop()
+
+	// Функция с несколькими возвращаемыми значениями
+	function.RequestFunctions()
+
 }
