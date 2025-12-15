@@ -29,6 +29,7 @@ func main() {
 	// loop.GetPracticeLoop()
 
 	// Функция с несколькими возвращаемыми значениями
-	function.RequestFunctions()
+	// function.RequestFunctions()
+	function.CheckFunc()
 
 }
