@@ -1,6 +1,9 @@
 package main
 
-import "golang-base/pkg/function"
+import (
+	"fmt"
+	"golang-base/pkg/switchCase"
+)
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -30,6 +33,32 @@ func main() {
 
 	// Функция с несколькими возвращаемыми значениями
 	// function.RequestFunctions()
-	function.CheckFunc()
+	// Функция деления с обработкой деления на ноль и вывод ошибки
+	// function.CheckFunc()
+
+	// Оператор switch
+	switchCase.GetDay("Mon")
+	switchCase.GetDay("Thu")
+	fmt.Println("")
+
+	switchCase.GetGraduate(5)
+	switchCase.GetGraduate(3)
+	switchCase.GetGraduate(2)
+	fmt.Println("")
+
+	switchCase.GetTemperature(-2)
+	switchCase.GetTemperature(2)
+	switchCase.GetTemperature(12)
+	switchCase.GetTemperature(22)
+	fmt.Println("")
+
+	switchCase.CheckX(1)
+	switchCase.CheckX(2)
+	switchCase.CheckX(22)
+	fmt.Println("")
+
+	switchCase.GetRune('a')
+	switchCase.GetRune('b')
+	switchCase.GetRune('2')
 
 }
