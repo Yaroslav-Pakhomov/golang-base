@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"golang-base/pkg/switchCase"
-)
+import "golang-base/pkg/anonymFunc"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -37,28 +34,30 @@ func main() {
 	// function.CheckFunc()
 
 	// Оператор switch
-	switchCase.GetDay("Mon")
-	switchCase.GetDay("Thu")
-	fmt.Println("")
+	// switchCase.GetDay("Mon")
+	// switchCase.GetDay("Thu")
+	// fmt.Println("")
 
-	switchCase.GetGraduate(5)
-	switchCase.GetGraduate(3)
-	switchCase.GetGraduate(2)
-	fmt.Println("")
+	// switchCase.GetGraduate(5)
+	// switchCase.GetGraduate(3)
+	// switchCase.GetGraduate(2)
+	// fmt.Println("")
 
-	switchCase.GetTemperature(-2)
-	switchCase.GetTemperature(2)
-	switchCase.GetTemperature(12)
-	switchCase.GetTemperature(22)
-	fmt.Println("")
+	// switchCase.GetTemperature(-2)
+	// switchCase.GetTemperature(2)
+	// switchCase.GetTemperature(12)
+	// switchCase.GetTemperature(22)
+	// fmt.Println("")
 
-	switchCase.CheckX(1)
-	switchCase.CheckX(2)
-	switchCase.CheckX(22)
-	fmt.Println("")
+	// switchCase.CheckX(1)
+	// switchCase.CheckX(2)
+	// switchCase.CheckX(22)
+	// fmt.Println("")
 
-	switchCase.GetRune('a')
-	switchCase.GetRune('b')
-	switchCase.GetRune('2')
+	// switchCase.GetRune('a')
+	// switchCase.GetRune('b')
+	// switchCase.GetRune('2')
 
+	// Анонимная функция
+	anonymFunc.GetAnonymFuncs()
 }
