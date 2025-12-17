@@ -1,4 +1,4 @@
-package anonymFunc
+package funcAnonym
 
 import "fmt"
 

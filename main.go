@@ -1,6 +1,6 @@
 package main
 
-import "golang-base/pkg/anonymFunc"
+import "golang-base/pkg/funcNamedVal"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -59,5 +59,8 @@ func main() {
 	// switchCase.GetRune('2')
 
 	// Анонимная функция
-	anonymFunc.GetAnonymFuncs()
+	// funcAnonym.GetAnonymFuncs()
+
+	// Функция с именованными возвращаемые значения
+	funcNamedVal.GetFuncsWithNamedVals()
 }
