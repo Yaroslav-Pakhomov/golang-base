@@ -1,6 +1,6 @@
 package main
 
-import "golang-base/pkg/funcNamedVal"
+import "golang-base/pkg/arrElemSumma"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -62,5 +62,8 @@ func main() {
 	// funcAnonym.GetAnonymFuncs()
 
 	// Функция с именованными возвращаемые значения
-	funcNamedVal.GetFuncsWithNamedVals()
+	// funcNamedVal.GetFuncsWithNamedVals()
+
+	// Работа с массивами - подсчёт суммы элементов массива
+	arrElemSumma.GetArrayElementSumma()
 }
