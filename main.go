@@ -1,8 +1,6 @@
 package main
 
-import (
-	"golang-base/pkg/arrSlice"
-)
+import "golang-base/pkg/arrMap"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -69,6 +67,9 @@ func main() {
 	// Работа с массивами - подсчёт суммы элементов массива
 	// arrElemSumma.GetArrayElementSumma()
 
-	// Работа со срезами (Slice)
-	arrSlice.WorkWithSlice()
+	// Работа со срезами (Slice) - динамическими списками/массивами
+	// arrSlice.WorkWithSlice()
+
+	// Работа с картами (Map) ассоциативными массивами
+	arrMap.WorkWithMap()
 }
