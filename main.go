@@ -1,6 +1,8 @@
 package main
 
-import "golang-base/pkg/arrElemSumma"
+import (
+	"golang-base/pkg/arrSlice"
+)
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -65,5 +67,8 @@ func main() {
 	// funcNamedVal.GetFuncsWithNamedVals()
 
 	// Работа с массивами - подсчёт суммы элементов массива
-	arrElemSumma.GetArrayElementSumma()
+	// arrElemSumma.GetArrayElementSumma()
+
+	// Работа со срезами (Slice)
+	arrSlice.WorkWithSlice()
 }
