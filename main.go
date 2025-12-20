@@ -1,6 +1,6 @@
 package main
 
-import "golang-base/pkg/arrMap"
+import "golang-base/pkg/level_1/structAndMeth"
 
 func main() {
 	// fmt.Println("Hello Go.")
@@ -71,5 +71,8 @@ func main() {
 	// arrSlice.WorkWithSlice()
 
 	// Работа с картами (Map) ассоциативными массивами
-	arrMap.WorkWithMap()
+	// arrMap.WorkWithMap()
+
+	// Работа со структурами ("классами")
+	structAndMeth.GetStructs()
 }
