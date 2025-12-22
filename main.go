@@ -1,8 +1,10 @@
 package main
 
-import "golang-base/pkg/level_1/structAndMeth"
+import "golang-base/pkg/level_2/pointer"
 
 func main() {
+	// 1-ый этап - начало
+
 	// fmt.Println("Hello Go.")
 	// fmt.Println("My name is Иван.")
 	// fmt.Println("I’m starting to learn Go!")
@@ -74,5 +76,14 @@ func main() {
 	// arrMap.WorkWithMap()
 
 	// Работа со структурами ("классами")
-	structAndMeth.GetStructs()
+	// structAndMeth.GetStructs()
+
+	// 1-ый этап - конец
+
+	// 2-ой этап - начало
+
+	// Указатели
+	pointer.WorkWithPointer()
+
+	// 2-ой этап - конец
 }
