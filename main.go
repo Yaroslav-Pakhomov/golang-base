@@ -1,6 +1,8 @@
 package main
 
-import "golang-base/pkg/level_2/pointer"
+import (
+	"golang-base/pkg/level_2/structAndMethDeep"
+)
 
 func main() {
 	// 1-ый этап - начало
@@ -83,7 +85,10 @@ func main() {
 	// 2-ой этап - начало
 
 	// Указатели
-	pointer.WorkWithPointer()
+	// pointer.WorkWithPointer()
+
+	// Работа со структурами ("классами")
+	structAndMethDeep.GetStructDeep()
 
 	// 2-ой этап - конец
 }
