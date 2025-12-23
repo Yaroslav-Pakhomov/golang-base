@@ -88,6 +88,7 @@ func main() {
 	// pointer.WorkWithPointer()
 
 	// Работа со структурами ("классами")
+	// Работа с интерфейсами
 	structAndMethDeep.GetStructDeep()
 
 	// 2-ой этап - конец
