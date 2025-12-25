@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_2/structAndMethDeep"
+	"golang-base/pkg/level_2/interfaceWork"
 )
 
 func main() {
@@ -89,7 +89,10 @@ func main() {
 
 	// Работа со структурами ("классами")
 	// Работа с интерфейсами
-	structAndMethDeep.GetStructDeep()
+	// structAndMethDeep.GetStructDeep()
+
+	// Использование интерфейса
+	interfaceWork.GetAllStruct()
 
 	// 2-ой этап - конец
 }
