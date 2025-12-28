@@ -1,6 +1,8 @@
 package main
 
-import "golang-base/pkg/level_2/structComposition"
+import (
+	"golang-base/pkg/level_2/emptyInterface"
+)
 
 func main() {
 	// 1-ый этап - начало
@@ -93,7 +95,10 @@ func main() {
 	// interfaceWork.GetAllStruct()
 
 	// Композиция структур
-	structComposition.GetMainWork()
+	// structComposition.GetMainWork()
+
+	// Пустой интерфейс
+	emptyInterface.GetWorkCheck()
 
 	// 2-ой этап - конец
 }
