@@ -1,11 +1,11 @@
 package main
 
 import (
-	"golang-base/pkg/level_2/emptyInterface"
+	"golang-base/pkg/level_2/structJson"
 )
 
 func main() {
-	// 1-ый этап - начало
+	// region 1-ый этап
 
 	// fmt.Println("Hello Go.")
 	// fmt.Println("My name is Иван.")
@@ -80,9 +80,9 @@ func main() {
 	// Работа со структурами ("классами")
 	// structAndMeth.GetStructs()
 
-	// 1-ый этап - конец
+	// endregion 1-ый этап
 
-	// 2-ой этап - начало
+	// region 2-ой этап
 
 	// Указатели
 	// pointer.WorkWithPointer()
@@ -98,7 +98,10 @@ func main() {
 	// structComposition.GetMainWork()
 
 	// Пустой интерфейс
-	emptyInterface.GetWorkCheck()
+	// emptyInterface.GetWorkCheck()
 
-	// 2-ой этап - конец
+	// Структура с JSON-тегами и Сериализация и десериализация структуры в JSON
+	structJson.GetWorkStructs()
+
+	// endregion 2-ой этап
 }
