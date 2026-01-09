@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_2/structJson"
+	"golang-base/pkg/level_3/errorsBase"
 )
 
 func main() {
@@ -101,7 +101,10 @@ func main() {
 	// emptyInterface.GetWorkCheck()
 
 	// Структура с JSON-тегами и Сериализация и десериализация структуры в JSON
-	structJson.GetWorkStructs()
+	// structJson.GetWorkStructs()
+
+	//
+	errorsBase.GetTestParseAge()
 
 	// endregion 2-ой этап
 }
