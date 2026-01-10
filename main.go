@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_3/errorsBase"
+	"golang-base/pkg/level_3/errorsCustom"
 )
 
 func main() {
@@ -103,8 +103,11 @@ func main() {
 	// Структура с JSON-тегами и Сериализация и десериализация структуры в JSON
 	// structJson.GetWorkStructs()
 
-	//
-	errorsBase.GetTestParseAge()
+	// Основное определение errors
+	// errorsBase.GetTestErrors()
+
+	// Пользовательская errors
+	errorsCustom.GetTestCustomErrors()
 
 	// endregion 2-ой этап
 }

@@ -75,7 +75,7 @@ var (
 	ErrInvalidConfig = errors.New("invalid config")
 )
 
-func GetTestParseAge() {
+func GetTestErrors() {
 
 	// ParseAge
 	tests := []string{"", "abc", "-5", "200", "42"}
