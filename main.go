@@ -1,8 +1,6 @@
 package main
 
-import (
-	"golang-base/pkg/level_3/errorsCustom"
-)
+import "golang-base/pkg/level_3/logging"
 
 func main() {
 	// region 1-ый этап
@@ -103,11 +101,19 @@ func main() {
 	// Структура с JSON-тегами и Сериализация и десериализация структуры в JSON
 	// structJson.GetWorkStructs()
 
+	// endregion 2-ой этап
+
+	// region 3-ий этап
+
 	// Основное определение errors
 	// errorsBase.GetTestErrors()
 
 	// Пользовательская errors
-	errorsCustom.GetTestCustomErrors()
+	// errorsCustom.GetTestCustomErrors()
 
-	// endregion 2-ой этап
+	// Логирование
+	// logging.GetTestLogs()
+	logging.GetTestLogsFile()
+
+	// endregion 3-ий этап
 }
