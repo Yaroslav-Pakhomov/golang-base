@@ -1,8 +1,9 @@
 package main
 
-import "golang-base/pkg/level_3/logging"
+import "golang-base/pkg/level_4/goroutinBase"
 
 func main() {
+
 	// region 1-ый этап
 
 	// fmt.Println("Hello Go.")
@@ -113,7 +114,14 @@ func main() {
 
 	// Логирование
 	// logging.GetTestLogs()
-	logging.GetTestLogsFile()
+	// logging.GetTestLogsFile()
 
 	// endregion 3-ий этап
+
+	// region 4-ый этап
+
+	// Горутины база
+	goroutinBase.GetGoroutineBase()
+
+	// endregion 4-ый этап
 }
