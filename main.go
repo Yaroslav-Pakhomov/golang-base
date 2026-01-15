@@ -1,6 +1,8 @@
 package main
 
-import "golang-base/pkg/level_4/goroutinBase"
+import (
+	"golang-base/pkg/level_4/chanBase"
+)
 
 func main() {
 
@@ -121,7 +123,10 @@ func main() {
 	// region 4-ый этап
 
 	// Горутины база
-	goroutinBase.GetGoroutineBase()
+	// goroutinBase.GetGoroutineBase()
+
+	// Канал база
+	chanBase.GetChannelBase()
 
 	// endregion 4-ый этап
 }
