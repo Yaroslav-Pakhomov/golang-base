@@ -64,8 +64,8 @@ func SetVars() {
 
 func SetConst() {
 	const Pi = 3.14159
-	const MAX_USERS = 100
+	const MaxUsers = 100
 
 	fmt.Println("Число Пи:", Pi)
-	fmt.Println("Макс. кол-во пользователей:", MAX_USERS)
+	fmt.Println("Макс. кол-во пользователей:", MaxUsers)
 }
