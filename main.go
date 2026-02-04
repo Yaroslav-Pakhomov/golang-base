@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_4/goroutinBase"
+	"golang-base/pkg/level_4/goroutinChanWaitGroupOther"
 )
 
 func main() {
@@ -123,16 +123,10 @@ func main() {
 	// region 4-ый этап
 
 	// Горутины база
-	goroutinBase.GetGoroutineBase()
+	// goroutinBase.GetGoroutineBase()
 
-	// Канал база
-	// chanBase.GetChannelBase()
-
-	// Select База
-	// selectBase.GetSelectBase()
-
-	// Select Практика
-	// selectPractice.GetSelectPractice()
+	// Горутины с каналом, с WaitGroup, нескольких горутин
+	goroutinChanWaitGroupOther.GetChanWaitGroupBase()
 
 	// endregion 4-ый этап
 }
