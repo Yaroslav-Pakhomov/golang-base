@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_4/goroutinChanWaitGroupOther"
+	"golang-base/pkg/level_4/bufferChan"
 )
 
 func main() {
@@ -126,7 +126,10 @@ func main() {
 	// goroutinBase.GetGoroutineBase()
 
 	// Горутины с каналом, с WaitGroup, нескольких горутин
-	goroutinChanWaitGroupOther.GetChanWaitGroupBase()
+	// goroutinChanWaitGroupOther.GetChanWaitGroupBase()
+	
+	// Буферизированный канал
+	bufferChan.GetBufferChanBase()
 
 	// endregion 4-ый этап
 }

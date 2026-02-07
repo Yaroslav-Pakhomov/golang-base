@@ -5,6 +5,8 @@ import (
 	"sync"
 )
 
+// Горутины с каналом, с WaitGroup, нескольких горутин
+
 // region Теоретическая часть
 
 // Горутины почти всегда используют каналы, WaitGroup или context:
@@ -121,6 +123,7 @@ func GetChanWaitGroupBase() {
 	for i := 1; i <= 5; i++ {
 		wgChan.Add(1)
 
+		// Записываем в канал
 		go getChanWaitGroup(i, chInt3, &wgChan)
 	}
 
