@@ -1,8 +1,6 @@
 package main
 
-import (
-	"golang-base/pkg/level_4/bufferChan"
-)
+import "golang-base/pkg/level_4/selectBase"
 
 func main() {
 
@@ -127,9 +125,12 @@ func main() {
 
 	// Горутины с каналом, с WaitGroup, нескольких горутин
 	// goroutinChanWaitGroupOther.GetChanWaitGroupBase()
-	
+
 	// Буферизированный канал
-	bufferChan.GetBufferChanBase()
+	// bufferChan.GetBufferChanBase()
+
+	// Select
+	selectBase.GetSelectBase()
 
 	// endregion 4-ый этап
 }
