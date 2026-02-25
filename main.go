@@ -1,6 +1,8 @@
 package main
 
-import "golang-base/pkg/level_4/selectBase"
+import (
+	"golang-base/pkg/level_4/patternFanOutFanIn"
+)
 
 func main() {
 
@@ -130,7 +132,10 @@ func main() {
 	// bufferChan.GetBufferChanBase()
 
 	// Select
-	selectBase.GetSelectBase()
+	// selectBase.GetSelectBase()
+
+	// Паттерн Fan-out / Fan-in (распараллеливание)
+	patternFanOutFanIn.GetPatternFanOutFanIn()
 
 	// endregion 4-ый этап
 }
