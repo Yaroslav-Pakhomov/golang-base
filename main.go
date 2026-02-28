@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_4/patternFanOutFanIn"
+	"golang-base/pkg/level_4/patternProducerConsumer"
 )
 
 func main() {
@@ -135,7 +135,10 @@ func main() {
 	// selectBase.GetSelectBase()
 
 	// Паттерн Fan-out / Fan-in (распараллеливание)
-	patternFanOutFanIn.GetPatternFanOutFanIn()
+	// patternFanOutFanIn.GetPatternFanOutFanIn()
+
+	// Паттерн Producer / Consumer (производитель / потребитель)
+	patternProducerConsumer.GetPatternProducerConsumer()
 
 	// endregion 4-ый этап
 }
