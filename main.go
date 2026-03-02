@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_4/patternProducerConsumer"
+	"golang-base/pkg/level_4/patternWorkerPool"
 )
 
 func main() {
@@ -138,7 +138,10 @@ func main() {
 	// patternFanOutFanIn.GetPatternFanOutFanIn()
 
 	// Паттерн Producer / Consumer (производитель / потребитель)
-	patternProducerConsumer.GetPatternProducerConsumer()
+	// patternProducerConsumer.GetPatternProducerConsumer()
+
+	// Паттерн Worker Pool (пул работников)
+	patternWorkerPool.GetPatternWorkerPool()
 
 	// endregion 4-ый этап
 }
