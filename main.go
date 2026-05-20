@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_4/patternWorkerPool"
+	"golang-base/pkg/level_5/httpServerBase"
 )
 
 func main() {
@@ -141,7 +141,14 @@ func main() {
 	// patternProducerConsumer.GetPatternProducerConsumer()
 
 	// Паттерн Worker Pool (пул работников)
-	patternWorkerPool.GetPatternWorkerPool()
+	// patternWorkerPool.GetPatternWorkerPool()
 
 	// endregion 4-ый этап
+
+	// region 5-ый этап
+
+	// Базовый HTTP-сервер
+	httpServerBase.GetHttpServerBase()
+
+	// endregion 5-ый этап
 }
