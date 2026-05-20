@@ -26,6 +26,12 @@ func GetHttpServerBase() {
 	// будет вызвана функция jsonHandler.
 	http.HandleFunc("/json", jsonHandler)
 
+	// Регистрируем HTTP-обработчик для маршрута "/json".
+	// При запросе:
+	// curl -X POST http://localhost:8080/message -H "Content-Type: application/json" -d '{"name":"Ivan"}'
+	// будет вызвана функция jsonHandler.
+	http.HandleFunc("/message", createMessageHandler)
+
 	// Выводим сообщение о запуске сервера
 	fmt.Println("server started on :8080")
 
@@ -78,6 +84,62 @@ func jsonHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Проверяем ошибку кодирования/записи JSON
 	if err != nil {
+		return
+	}
+}
+
+// CreateMessageRequest — структура входящего JSON-запроса.
+// Ожидаем JSON вида:
+//
+//	{
+//	  "name": "Ivan"
+//	}
+type CreateMessageRequest struct {
+	Name string `json:"name"`
+}
+
+// createMessageHandler — HTTP-обработчик,
+// который принимает JSON от клиента
+// и возвращает JSON-ответ.
+func createMessageHandler(w http.ResponseWriter, r *http.Request) {
+
+	// Проверяем HTTP-метод
+	if r.Method != http.MethodPost {
+
+		// Возвращаем ошибку 405 Method Not Allowed
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Создаём переменную для хранения данных запроса
+	var req CreateMessageRequest
+
+	// Читаем JSON из тела HTTP-запроса (r.Body)
+	// и записываем данные в структуру req.
+	err := json.NewDecoder(r.Body).Decode(&req)
+
+	// Если JSON некорректный —
+	// возвращаем ошибку 400 Bad Request.
+	if err != nil {
+		// Отправляем клиенту текст ошибки
+		http.Error(w, "invalid json", http.StatusBadRequest)
+		return
+	}
+
+	// Устанавливаем заголовок ответа.
+	// Сервер будет возвращать JSON.
+	w.Header().Set("Content-Type", "application/json")
+
+	// Формируем JSON-ответ и отправляем клиенту.
+	// map[string]string преобразуется в JSON-объект.
+	errJson := json.NewEncoder(w).Encode(map[string]string{
+
+		// Поле message в JSON-ответе
+		"message": "Hello, " + req.Name,
+	})
+
+	// Проверяем ошибку записи JSON-ответа
+	if errJson != nil {
 		return
 	}
 }
