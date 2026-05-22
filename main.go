@@ -151,7 +151,10 @@ func main() {
 	// JSON-ответ на GET /json
 	// POST-запрос с JSON-телом
 	// middleware для логирования
-	httpServerBase.GetHttpServerBase()
+	// httpServerBase.GetHttpServerBase()
+
+	// CRUD API для User
+	httpServerBase.GetCrudApiUser()
 
 	// endregion 5-ый этап
 }

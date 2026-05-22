@@ -52,7 +52,7 @@ func GetHttpServerBase() {
 	// будет вызвана функция jsonHandler.
 	http.HandleFunc("/message", createMessageHandler)
 
-	// Выводим сообщение о запуске сервера. Порт можно менять нап.: 8080 -> 8081
+	// Выводим сообщение о запуске сервера
 	fmt.Println("server started on :8080")
 
 	// Берём стандартный роутер
@@ -66,7 +66,7 @@ func GetHttpServerBase() {
 	// Запускаем HTTP-сервер
 	// ":8080" — сервер слушает порт 8080
 	// nil — используется стандартный ServeMux (маршрутизатор)
-	// loggedMux с middleware
+	// loggedMux с middleware. Порт можно менять нап.: 8080 -> 8081
 	err := http.ListenAndServe(":8080", loggedMux)
 
 	// Если сервер не смог запуститься — выводим ошибку
