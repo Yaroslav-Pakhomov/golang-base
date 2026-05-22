@@ -68,33 +68,6 @@ func GetCrudApiUser() {
 	}
 }
 
-// region Методы Распределения CRUD
-func usersHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		getUsersHandler(w, r)
-	case http.MethodPost:
-		createUserHandler(w, r)
-	default:
-		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
-	}
-}
-
-func userByIDHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		getUserHandler(w, r)
-	case http.MethodPut:
-		updateUserHandler(w, r)
-	case http.MethodDelete:
-		deleteUserHandler(w, r)
-	default:
-		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
-	}
-}
-
-// endregion Методы Распределения CRUD
-
 // region Методы CRUD
 
 // getUsersHandler - получение пользователей
@@ -114,9 +87,7 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Устанавливаем заголовок ответа.
 	// Сообщаем клиенту, что сервер возвращает JSON.
-	w.Header().Set("Content-Type", "application/json")
-
-	json.NewEncoder(w).Encode(result)
+	writeJSON(w, http.StatusOK, result)
 }
 
 // getUserHandler - получение пользователя
@@ -126,7 +97,7 @@ func getUserHandler(w http.ResponseWriter, r *http.Request) {
 		// неправильный формат запроса → 400
 		// объекта с таким ID нет → 404
 		// StatusNotFound - 404, StatusBadRequest - 400
-		http.Error(w, "Invalid user id", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "Invalid user id")
 		return
 	}
 
@@ -135,12 +106,11 @@ func getUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, ok := users[id]
 	if !ok {
-		http.Error(w, "User not found", http.StatusNotFound)
+		writeError(w, http.StatusNotFound, "User not found")
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	writeJSON(w, http.StatusOK, user)
 }
 
 // createUserHandler - создание пользователя
@@ -149,12 +119,12 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		http.Error(w, "invalid json", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "invalid json")
 		return
 	}
 
 	if req.Name == "" || req.Email == "" {
-		http.Error(w, "name and email required", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "name and email required")
 		return
 	}
 
@@ -170,9 +140,7 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	users[nextID] = user
 	nextID++
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	writeJSON(w, http.StatusCreated, user)
 }
 
 // updateUserHandler - обновление пользователя
@@ -180,7 +148,7 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := getUserIDFromPath(r)
 
 	if err != nil {
-		http.Error(w, "Invalid user id", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "Invalid user id")
 		return
 	}
 
@@ -188,7 +156,7 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	defer mu.Unlock()
 
 	if _, ok := users[id]; !ok {
-		http.Error(w, "User not found", http.StatusNotFound)
+		writeError(w, http.StatusNotFound, "User not found")
 		return
 	}
 
@@ -196,12 +164,12 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		http.Error(w, "invalid json", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "invalid json")
 		return
 	}
 
 	if req.Name == "" || req.Email == "" {
-		http.Error(w, "name and email required", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "name and email required")
 		return
 	}
 
@@ -212,8 +180,7 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	users[id] = user
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	writeJSON(w, http.StatusOK, user)
 }
 
 // deleteUserHandler - удаление пользователя
@@ -221,7 +188,7 @@ func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := getUserIDFromPath(r)
 	if err != nil {
-		http.Error(w, "Invalid user id", http.StatusBadRequest)
+		writeError(w, http.StatusBadRequest, "Invalid user id")
 		return
 	}
 
@@ -229,18 +196,18 @@ func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	defer mu.Unlock()
 
 	if _, ok := users[id]; !ok {
-		http.Error(w, "User not found", http.StatusNotFound)
+		writeError(w, http.StatusNotFound, "User not found")
 		return
 	}
 
 	delete(users, id)
 
-	w.Header().Set("Content-Type", "application/json")
-
-	json.NewEncoder(w).Encode(map[string]string{
+	writeJSON(w, http.StatusOK, map[string]string{
 		"message": "User deleted",
 	})
 }
+
+// region Методы-хэлперы
 
 // getUserIDFromPath - получение ID из запроса
 func getUserIDFromPath(r *http.Request) (int, error) {
@@ -248,5 +215,61 @@ func getUserIDFromPath(r *http.Request) (int, error) {
 
 	return strconv.Atoi(idStr)
 }
+
+// writeError - helper для отправки JSON-ошибок клиенту.
+// Используется вместо http.Error, чтобы все ошибки были в одном формате JSON.
+// w http.ResponseWriter - Объект ответа HTTP.
+// status - HTTP статус ответа:
+// - 400 Bad Request
+// - 404 Not Found
+// - 500 Internal Server Error
+// message - текст ошибки
+func writeError(w http.ResponseWriter, status int, message string) {
+	// Вызываем универсальный helper writeJSON.
+	// Создаём map:
+	// {
+	//   "error": "текст ошибки"
+	// }
+	// который будет автоматически преобразован в JSON.
+	writeJSON(w, status, map[string]string{
+		"error": message,
+	})
+}
+
+// writeJSON - универсальный helper для отправки JSON-ответов.
+// Может отправлять:
+// - struct
+// - map
+// - slice
+// - любые данные в формате JSON.
+// data any - любые Go-данные для сериализации в JSON.
+func writeJSON(w http.ResponseWriter, status int, data any) {
+	// Устанавливаем HTTP header.
+	// Сообщаем клиенту, что сервер отправляет JSON.
+	w.Header().Set("Content-Type", "application/json")
+
+	// Отправляем HTTP статус:
+	// 200 OK
+	// 201 Created
+	// 400 Bad Request
+	// 404 Not Found
+	// и т.д.
+	w.WriteHeader(status)
+
+	// Создаём JSON encoder.
+	// Encode:
+	// 1. превращает Go-данные в JSON
+	// 2. сразу записывает JSON в HTTP response.
+	err := json.NewEncoder(w).Encode(data)
+
+	// Проверяем ошибку сериализации JSON.
+	// После WriteHeader уже нельзя менять HTTP response,
+	// поэтому просто выводим ошибку в консоль сервера.
+	if err != nil {
+		fmt.Println("failed to encode json:", err)
+	}
+}
+
+// endregion Методы-хэлперы
 
 // endregion Методы CRUD
