@@ -150,6 +150,7 @@ func main() {
 	// Базовый HTTP-сервер
 	// JSON-ответ на GET /json
 	// POST-запрос с JSON-телом
+	// middleware для логирования
 	httpServerBase.GetHttpServerBase()
 
 	// endregion 5-ый этап
