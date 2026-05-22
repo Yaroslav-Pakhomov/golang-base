@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-base/pkg/level_5/httpServerBase"
+	"golang-base/pkg/level_5/crudApiUser"
 )
 
 func main() {
@@ -154,7 +154,7 @@ func main() {
 	// httpServerBase.GetHttpServerBase()
 
 	// CRUD API для User
-	httpServerBase.GetCrudApiUser()
+	crudApiUser.GetCrudApiUser()
 
 	// endregion 5-ый этап
 }
