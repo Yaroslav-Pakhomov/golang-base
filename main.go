@@ -154,6 +154,8 @@ func main() {
 	// httpServerBase.GetHttpServerBase()
 
 	// CRUD API для User
+	// Подключение роутера chi
+	// Context в обработчиках
 	crudApiUser.GetCrudApiUser()
 
 	// endregion 5-ый этап

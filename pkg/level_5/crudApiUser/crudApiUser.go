@@ -3,6 +3,7 @@ package crudApiUser
 // CRUD API для User
 
 // Проверка:
+// - Запустить "go run ." в одном терминале
 // curl -X POST http://localhost:8081/users -H "Content-Type: application/json" -d '{"name":"Alex","email":"alex@mail.com"}'
 // curl http://localhost:8081/users
 // curl http://localhost:8081/users/1
@@ -10,6 +11,7 @@ package crudApiUser
 // curl -X DELETE http://localhost:8081/users/1
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -73,6 +75,31 @@ func GetCrudApiUser() {
 // getUsersHandler - получение пользователей
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 
+	ctx := r.Context()
+	// Проверяем, не был ли отменён context запроса.
+	//
+	// checkContext вернёт ошибку если:
+	// - клиент закрыл соединение;
+	// - request был отменён;
+	// - истёк timeout/deadline.
+	//
+	// Важно:
+	// Context проверяется ДО выполнения основной логики,
+	// чтобы не тратить ресурсы сервера на уже отменённый запрос.
+	if err := checkContext(ctx); err != nil {
+
+		// Отправляем HTTP ошибку клиенту.
+		//
+		// err.Error() может вернуть:
+		// - "context canceled"
+		// - "context deadline exceeded"
+		//
+		// StatusRequestTimeout (408) сообщает,
+		// что запрос был прерван или превысил timeout.
+		writeError(w, http.StatusRequestTimeout, err.Error())
+		return
+	}
+
 	// Блокировка для чтения
 	// Пока один handler держит lock — остальные ждут.
 	mu.RLock()
@@ -92,6 +119,13 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 // getUserHandler - получение пользователя
 func getUserHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+	if err := checkContext(ctx); err != nil {
+		writeError(w, http.StatusRequestTimeout, err.Error())
+		return
+	}
+
 	id, err := getUserIDFromPath(r)
 	if err != nil {
 		// неправильный формат запроса → 400
@@ -115,6 +149,13 @@ func getUserHandler(w http.ResponseWriter, r *http.Request) {
 
 // createUserHandler - создание пользователя
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+	if err := checkContext(ctx); err != nil {
+		writeError(w, http.StatusRequestTimeout, err.Error())
+		return
+	}
+
 	var req CreateUserRequest
 
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -145,6 +186,13 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 
 // updateUserHandler - обновление пользователя
 func updateUserHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+	if err := checkContext(ctx); err != nil {
+		writeError(w, http.StatusRequestTimeout, err.Error())
+		return
+	}
+
 	id, err := getUserIDFromPath(r)
 
 	if err != nil {
@@ -185,6 +233,12 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 // deleteUserHandler - удаление пользователя
 func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+	if err := checkContext(ctx); err != nil {
+		writeError(w, http.StatusRequestTimeout, err.Error())
+		return
+	}
 
 	id, err := getUserIDFromPath(r)
 	if err != nil {
@@ -269,6 +323,118 @@ func writeJSON(w http.ResponseWriter, status int, data any) {
 		fmt.Println("failed to encode json:", err)
 	}
 }
+
+// checkContext проверяет, не был ли отменён context запроса.
+//
+// Context в Go используется для:
+// - отмены операций;
+// - timeout/deadline;
+// - передачи request-scoped данных;
+// - управления жизненным циклом запроса.
+//
+// Context особенно важен для:
+// - HTTP handlers;
+// - SQL запросов;
+// - внешних API;
+// - goroutine;
+// - gRPC;
+// - Kafka/Redis clients.
+//
+// -------------------------------------------------------------------
+// Основные типы context:
+//
+//  1. context.Background()
+//     Базовый корневой context.
+//     Обычно используется в main(), init(), tests.
+//
+//     ctx := context.Background()
+//
+//  2. context.TODO()
+//     Используется как временная заглушка,
+//     когда ещё не решили какой context нужен.
+//
+//     ctx := context.TODO()
+//
+//  3. context.WithCancel()
+//     Позволяет вручную отменить context.
+//
+//     ctx, cancel := context.WithCancel(parent)
+//     defer cancel()
+//
+//  4. context.WithTimeout()
+//     Автоматически отменяет context через заданное время.
+//
+//     ctx, cancel := context.WithTimeout(parent, 5*time.Second)
+//
+//  5. context.WithDeadline()
+//     Отменяет context в конкретный момент времени.
+//
+//     ctx, cancel := context.WithDeadline(parent, deadline)
+//
+//  6. context.WithValue()
+//     Позволяет передавать request-scoped данные:
+//     requestID, userID, traceID и т.д.
+//
+//     ctx := context.WithValue(parent, "requestID", "abc123")
+//
+// -------------------------------------------------------------------
+// В HTTP сервере context обычно берут из:
+//
+//	r.Context()
+//
+// Такой context автоматически отменяется если:
+// - клиент закрыл соединение;
+// - истёк timeout;
+// - сервер завершил request.
+//
+// -------------------------------------------------------------------
+// Важно:
+//
+// checkContext НЕ должен:
+// - создавать timeout;
+// - писать HTTP response;
+// - содержать бизнес-логику.
+//
+// Его задача — только проверить состояние context.
+//
+// -------------------------------------------------------------------
+// Обычно timeout создают через middleware:
+//
+//	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+//	defer cancel()
+//
+// -------------------------------------------------------------------
+// Функция возвращает:
+//
+// - nil                 → context активен;
+// - context.Canceled    → запрос отменён;
+// - context.DeadlineExceeded → timeout истёк.
+//
+// -------------------------------------------------------------------
+// В текущем CRUD API проверка context скорее учебная,
+// потому что операции с map выполняются мгновенно.
+//
+// Но в production context критически важен
+// для работы с БД, API и конкурентными операциями.
+func checkContext(ctx context.Context) error {
+
+	select {
+	case <-ctx.Done():
+		// ctx.Done() — это канал, который закрывается,
+		// когда context отменён.
+		//
+		// ctx.Err() возвращает причину отмены:
+		// - context.Canceled
+		// - context.DeadlineExceeded
+		return ctx.Err()
+	default:
+		// default делает select неблокирующим.
+		// Если context ещё активен, функция сразу вернёт nil.
+		return nil
+	}
+}
+
+// Теоретически это уместно, когда handler может выполнять долгую работу: запрос в БД, внешний API, чтение файла, ожидание goroutine. В текущем CRUD на map проверка context больше учебная, потому что операции выполняются мгновенно.
 
 // endregion Методы-хэлперы
 
