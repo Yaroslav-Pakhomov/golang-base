@@ -14,6 +14,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -61,12 +62,13 @@ func GetCrudApiUser() {
 	router.Put("/users/{id}", updateUserHandler)
 	router.Delete("/users/{id}", deleteUserHandler)
 
-	// Запускаем HTTP-сервер, с middleware
+	// Запускаем HTTP-сервер, с middleware. Порт можно менять нап.: 8081 -> 8080
 	err := http.ListenAndServe(":8081", router)
 
 	// Если сервер не смог запуститься — выводим ошибку
 	if err != nil {
-		fmt.Println("server error:", err)
+		// log добавляет timestamp, удобнее для debugging
+		log.Fatal(err)
 	}
 }
 

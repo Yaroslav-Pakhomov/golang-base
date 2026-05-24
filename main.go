@@ -2,6 +2,8 @@ package main
 
 import (
 	"golang-base/pkg/level_5/crudApiUser"
+	"golang-base/pkg/level_5/httpClient"
+	"time"
 )
 
 func main() {
@@ -156,7 +158,17 @@ func main() {
 	// CRUD API для User
 	// Подключение роутера chi
 	// Context в обработчиках
-	crudApiUser.GetCrudApiUser()
+	// Запускаем сервер в отдельной goroutine
+	go crudApiUser.GetCrudApiUser()
+
+	// Даём серверу время стартовать
+	time.Sleep(1 * time.Second)
+
+	// HTTP-клиент
+	httpClient.GetHttpClient()
+
+	// Блокируем main goroutine, чтобы сервер продолжал работать. Иначе main() завершится все goroutine умрут.
+	select {}
 
 	// endregion 5-ый этап
 }
