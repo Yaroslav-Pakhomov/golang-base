@@ -155,22 +155,25 @@ func main() {
 	// middleware для логирования
 	// httpServerBase.GetHttpServerBase()
 
+	// Запускаем HTTP-клиент в отдельной goroutine
+	go func() {
+		// Даём серверу время стартовать
+		time.Sleep(1 * time.Second)
+		// HTTP-клиент
+		httpClient.GetHttpClient()
+	}()
+
 	// CRUD API для User
 	// Подключение роутера chi
 	// Context в обработчиках
 	// Загрузка файлов через POST
 	// Список файлов через GET
-	// Запускаем сервер в отдельной goroutine
-	go crudApiUser.GetCrudApiUser()
+	// Запуск сервера с учётом graceful shutdown (остановки сервера)
 
-	// Даём серверу время стартовать
-	time.Sleep(1 * time.Second)
-
-	// HTTP-клиент
-	httpClient.GetHttpClient()
-
-	// Блокируем main goroutine, чтобы сервер продолжал работать. Иначе main() завершится все goroutine умрут.
-	select {}
+	// Запускаем сервер.
+	// GetCrudApiUser блокирует main goroutine до Ctrl+C,
+	// потому что внутри сервера работает graceful shutdown.
+	crudApiUser.GetCrudApiUser()
 
 	// endregion 5-ый этап
 }

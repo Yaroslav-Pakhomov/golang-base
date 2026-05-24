@@ -14,6 +14,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"golang-base/pkg/level_5/serverCrud"
 	"io"
 	"log"
 	"net/http"
@@ -77,14 +78,8 @@ func GetCrudApiUser() {
 	// Загрузка файла
 	router.Post("/upload", uploadHandler)
 
-	// Запускаем HTTP-сервер, с middleware. Порт можно менять нап.: 8081 -> 8080
-	err := http.ListenAndServe(":8081", router)
-
-	// Если сервер не смог запуститься — выводим ошибку
-	if err != nil {
-		// log добавляет timestamp, удобнее для debugging
-		log.Fatal(err)
-	}
+	// Запуск сервера
+	serverCrud.StartCrudServer(router)
 }
 
 // region Методы CRUD
@@ -400,7 +395,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	//   "filename": "photo.png"
 	// }
 	writeJSON(w, http.StatusCreated, map[string]string{
-		"filename": header.Filename,
+		"filename": filename,
 	})
 }
 
