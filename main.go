@@ -159,6 +159,7 @@ func main() {
 	// Подключение роутера chi
 	// Context в обработчиках
 	// Загрузка файлов через POST
+	// Список файлов через GET
 	// Запускаем сервер в отдельной goroutine
 	go crudApiUser.GetCrudApiUser()
 

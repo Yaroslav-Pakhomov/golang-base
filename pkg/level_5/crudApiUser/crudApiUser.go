@@ -53,17 +53,27 @@ func loggingMiddlewareCrud(next http.Handler) http.Handler {
 }
 
 func GetCrudApiUser() {
+	// Проверяем/создаём папку uploads
+	errDir := os.MkdirAll("./uploads", os.ModePerm)
+	if errDir != nil {
+		log.Fatal("cannot create uploads directory:", errDir)
+	}
+
 	// Подключаем роутер chi
 	router := chi.NewRouter()
 
 	// Оборачиваем router в middleware.
 	router.Use(loggingMiddlewareCrud)
 
+	// CRUD Users
 	router.Get("/users", getUsersHandler)
 	router.Get("/users/{id}", getUserHandler)
 	router.Post("/users", createUserHandler)
 	router.Put("/users/{id}", updateUserHandler)
 	router.Delete("/users/{id}", deleteUserHandler)
+
+	// Список файлов
+	router.Get("/files", filesHandler)
 	// Загрузка файла
 	router.Post("/upload", uploadHandler)
 
@@ -266,6 +276,64 @@ func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{
 		"message": "User deleted",
 	})
+}
+
+type FileInfo struct {
+	Name string `json:"name"`
+	Size int64  `json:"size"`
+}
+
+// filesHandler - возвращает список файлов из папки ./uploads.
+func filesHandler(w http.ResponseWriter, r *http.Request) {
+	// Читаем содержимое папки ./uploads
+	//
+	// os.ReadDir возвращает:
+	// - список файлов/папок
+	// - ошибку
+	entries, err := os.ReadDir("./uploads")
+
+	// Если не удалось прочитать папку:
+	// - папка не существует
+	// - нет прав доступа
+	// - ошибка файловой системы
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "cannot read uploads")
+		return
+	}
+
+	// Создаём пустой slice для хранения имён файлов
+	var files []FileInfo
+
+	// Перебираем все элементы папки
+	for _, entry := range entries {
+
+		// Проверяем:
+		// является ли элемент НЕ директорией
+		//
+		// То есть пропускаем вложенные папки
+		if !entry.IsDir() {
+			info, err := entry.Info()
+			if err != nil {
+				continue
+			}
+
+			// Добавляем имя файла в slice
+			files = append(files, FileInfo{
+				Name: entry.Name(),
+				Size: info.Size(),
+			})
+		}
+	}
+
+	// Возвращаем JSON:
+	//
+	// [
+	//   {
+	//     "name": "photo.png",
+	//     "size": 12345
+	//   },
+	// ]
+	writeJSON(w, http.StatusOK, files)
 }
 
 // uploadHandler - загрузка файла
