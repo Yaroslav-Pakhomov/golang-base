@@ -14,8 +14,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"sync"
 
@@ -61,6 +64,8 @@ func GetCrudApiUser() {
 	router.Post("/users", createUserHandler)
 	router.Put("/users/{id}", updateUserHandler)
 	router.Delete("/users/{id}", deleteUserHandler)
+	// Загрузка файла
+	router.Post("/upload", uploadHandler)
 
 	// Запускаем HTTP-сервер, с middleware. Порт можно менять нап.: 8081 -> 8080
 	err := http.ListenAndServe(":8081", router)
@@ -260,6 +265,74 @@ func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, map[string]string{
 		"message": "User deleted",
+	})
+}
+
+// uploadHandler - загрузка файла
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+
+	// Получаем файл из multipart/form-data
+	//
+	// "file" — имя поля формы:
+	//
+	// <input type="file" name="file">
+	//
+	// FormFile возвращает:
+	// - file   → содержимое файла (поток io.Reader)
+	// - header → метаданные файла
+	// - err    → ошибка
+	file, header, err := r.FormFile("file")
+
+	// Если файл не был отправлен —
+	// возвращаем HTTP 400 Bad Request
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "file is required")
+		return
+	}
+
+	// Закрываем файл после завершения функции
+	defer file.Close()
+
+	// Создаём файл на сервере:
+	//
+	// ./uploads/
+	// └── имя_файла
+	//
+	// header.Filename — оригинальное имя файла
+	filename := filepath.Base(header.Filename)
+	dst, err := os.Create("./uploads/" + filename)
+
+	// Если не удалось создать файл:
+	// - нет папки uploads
+	// - нет прав доступа
+	// - ошибка диска
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "cannot save file")
+		return
+	}
+
+	// Закрываем файл после завершения функции
+	defer dst.Close()
+
+	// Копируем содержимое uploaded файла
+	// в файл на диске
+	//
+	// file → источник
+	// dst  → куда сохраняем
+	_, err = io.Copy(dst, file)
+
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "cannot copy file")
+		return
+	}
+
+	// Возвращаем JSON-ответ:
+	//
+	// {
+	//   "filename": "photo.png"
+	// }
+	writeJSON(w, http.StatusCreated, map[string]string{
+		"filename": header.Filename,
 	})
 }
 
