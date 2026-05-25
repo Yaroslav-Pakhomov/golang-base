@@ -176,4 +176,8 @@ func main() {
 	crudApiUser.GetCrudApiUser()
 
 	// endregion 5-ый этап
+
+	// region 6-ой этап
+	
+	// endregion 6-ой этап
 }
