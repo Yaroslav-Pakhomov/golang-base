@@ -1,8 +1,13 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"golang-base/pkg/level_5/crudApiUser"
 	"golang-base/pkg/level_5/httpClient"
+	"golang-base/pkg/level_6/config"
+	"golang-base/pkg/level_6/database"
+	"log"
 	"time"
 )
 
@@ -147,6 +152,31 @@ func main() {
 
 	// endregion 4-ый этап
 
+	// region 6-ой этап
+
+	// Подключение к БД
+	cfg := config.LoadConfig()
+
+	db, err := database.ConnectPostgresDb(context.Background(), cfg)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Println("failed to close database:", err)
+		}
+	}()
+
+	if err := database.CheckConnect(context.Background(), db); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("DB connected")
+
+	// endregion 6-ой этап
+
 	// region 5-ый этап
 
 	// Базовый HTTP-сервер
@@ -173,11 +203,8 @@ func main() {
 	// Запускаем сервер.
 	// GetCrudApiUser блокирует main goroutine до Ctrl+C,
 	// потому что внутри сервера работает graceful shutdown.
+	// Запуск сервера происходит после подключения к БД
 	crudApiUser.GetCrudApiUser()
 
 	// endregion 5-ый этап
-
-	// region 6-ой этап
-	
-	// endregion 6-ой этап
 }
