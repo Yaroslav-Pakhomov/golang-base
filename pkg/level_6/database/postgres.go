@@ -73,3 +73,21 @@ func CheckConnect(ctx context.Context, db *sql.DB) error {
 
 	return nil
 }
+
+func CreatePostsTable(db *sql.DB) error {
+	query := `
+			CREATE TABLE IF NOT EXISTS posts (
+				id SERIAL PRIMARY KEY,
+				title TEXT NOT NULL,
+				description TEXT NOT NULL,
+				sort_order INT NOT NULL,
+				created_at TIMESTAMP DEFAULT NOW()
+			);`
+
+	_, err := db.Exec(query)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}

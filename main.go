@@ -175,6 +175,11 @@ func main() {
 
 	fmt.Println("DB connected")
 
+	errCreate := database.CreatePostsTable(db)
+	if errCreate != nil {
+		return
+	}
+
 	// endregion 6-ой этап
 
 	// region 5-ый этап
