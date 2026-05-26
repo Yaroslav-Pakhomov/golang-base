@@ -88,6 +88,21 @@ func CreatePostsTable(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	return nil
 
+	return nil
+}
+
+func CreatePost(db *sql.DB, title string, description string, sort_order int) error {
+	_, err := db.Exec(
+		"INSERT INTO posts (title, description, sort_order) VALUES ($1, $2, $3)",
+		title,
+		description,
+		sort_order,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

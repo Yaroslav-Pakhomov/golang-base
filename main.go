@@ -175,8 +175,13 @@ func main() {
 
 	fmt.Println("DB connected")
 
-	errCreate := database.CreatePostsTable(db)
-	if errCreate != nil {
+	errCreateTable := database.CreatePostsTable(db)
+	if errCreateTable != nil {
+		return
+	}
+
+	errCreatePost := database.CreatePost(db, "Заголовок", "Описание", 1)
+	if errCreatePost != nil {
 		return
 	}
 
