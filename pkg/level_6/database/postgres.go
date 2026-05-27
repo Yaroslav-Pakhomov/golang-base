@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	// Конфиг приложения с данными для подключения к БД
 	"golang-base/pkg/level_6/config"
@@ -57,6 +58,7 @@ func ConnectPostgresDb(ctx context.Context, cfg *config.Config) (*sql.DB, error)
 	return db, nil
 }
 
+// CheckConnect - проверка соединения с БД
 func CheckConnect(ctx context.Context, db *sql.DB) error {
 	var version string
 
@@ -74,6 +76,7 @@ func CheckConnect(ctx context.Context, db *sql.DB) error {
 	return nil
 }
 
+// CreatePostsTable - создание табл. Поста
 func CreatePostsTable(db *sql.DB) error {
 	query := `
 			CREATE TABLE IF NOT EXISTS posts (
@@ -92,6 +95,7 @@ func CreatePostsTable(db *sql.DB) error {
 	return nil
 }
 
+// CreatePost - создание поста
 func CreatePost(db *sql.DB, title string, description string, sort_order int) error {
 	_, err := db.Exec(
 		"INSERT INTO posts (title, description, sort_order) VALUES ($1, $2, $3)",
@@ -105,4 +109,41 @@ func CreatePost(db *sql.DB, title string, description string, sort_order int) er
 	}
 
 	return nil
+}
+
+type Post struct {
+	ID          int       `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	SortOrder   int       `json:"sort_order"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+// SelectPosts - получение всех постов
+func SelectPosts(db *sql.DB) ([]Post, error) {
+
+	rows, err := db.Query("SELECT id, title, description, sort_order, created_at FROM posts")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+
+	for rows.Next() {
+		var post Post
+
+		err := rows.Scan(&post.ID, &post.Title, &post.Description, &post.SortOrder, &post.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }

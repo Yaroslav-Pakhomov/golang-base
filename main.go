@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"golang-base/pkg/level_5/crudApiUser"
 	"golang-base/pkg/level_5/httpClient"
@@ -154,7 +155,7 @@ func main() {
 
 	// region 6-ой этап
 
-	// Подключение к БД
+	// region Подключение к БД
 	cfg := config.LoadConfig()
 
 	db, err := database.ConnectPostgresDb(context.Background(), cfg)
@@ -175,15 +176,39 @@ func main() {
 
 	fmt.Println("DB connected")
 
+	// endregion Подключение к БД
+
+	// Создание Табл. Поста
 	errCreateTable := database.CreatePostsTable(db)
 	if errCreateTable != nil {
 		return
 	}
 
-	errCreatePost := database.CreatePost(db, "Заголовок", "Описание", 1)
-	if errCreatePost != nil {
+	// Создание записи Поста
+	// errCreatePost := database.CreatePost(db, "Заголовок 1", "Описание 1", 1)
+	// if errCreatePost != nil {
+	// 	return
+	// }
+	// errCreatePost = database.CreatePost(db, "Заголовок 2", "Описание 2", 2)
+	// if errCreatePost != nil {
+	// 	return
+	// }
+
+	// region Получение всех Постов
+	posts, errPosts := database.SelectPosts(db)
+	if errPosts != nil {
+		log.Println(errPosts)
 		return
 	}
+
+	jsonData, err := json.MarshalIndent(posts, "", "  ")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	fmt.Println(string(jsonData))
+	// endregion Получение всех Постов
 
 	// endregion 6-ой этап
 
