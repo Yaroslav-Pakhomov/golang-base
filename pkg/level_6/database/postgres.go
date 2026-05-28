@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -146,4 +147,26 @@ func SelectPosts(db *sql.DB) ([]Post, error) {
 	}
 
 	return posts, nil
+}
+
+// GetPostById - получение Поста по ID
+func GetPostById(db *sql.DB, id int) (Post, error) {
+	var post Post
+
+	row := db.QueryRow(
+		"SELECT id, title, description, sort_order, created_at FROM posts WHERE id = $1",
+		id,
+	)
+
+	err := row.Scan(&post.ID, &post.Title, &post.Description, &post.SortOrder, &post.CreatedAt)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return Post{}, fmt.Errorf("post not found")
+	}
+
+	if err != nil {
+		return Post{}, err
+	}
+
+	return post, nil
 }

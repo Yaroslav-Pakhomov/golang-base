@@ -210,6 +210,28 @@ func main() {
 	fmt.Println(string(jsonData))
 	// endregion Получение всех Постов
 
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("")
+
+	// region Получение Поста
+	post, errPost := database.GetPostById(db, 1)
+
+	if errPost != nil {
+		log.Println(errPost)
+		return
+	}
+
+	jsonPost, err := json.MarshalIndent(post, "", "  ")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	fmt.Println(string(jsonPost))
+
+	// endregion Получение Поста
+
 	// endregion 6-ой этап
 
 	// region 5-ый этап
