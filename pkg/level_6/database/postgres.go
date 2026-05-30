@@ -51,7 +51,10 @@ func ConnectPostgresDb(ctx context.Context, cfg *config.Config) (*sql.DB, error)
 
 		// Если подключение не удалось —
 		// закрываем пул соединений.
-		db.Close()
+		err := db.Close()
+		if err != nil {
+			return nil, err
+		}
 		return nil, err
 	}
 
@@ -97,12 +100,12 @@ func CreatePostsTable(db *sql.DB) error {
 }
 
 // CreatePost - создание поста
-func CreatePost(db *sql.DB, title string, description string, sort_order int) error {
+func CreatePost(db *sql.DB, title string, description string, sortOrder int) error {
 	_, err := db.Exec(
 		"INSERT INTO posts (title, description, sort_order) VALUES ($1, $2, $3)",
 		title,
 		description,
-		sort_order,
+		sortOrder,
 	)
 
 	if err != nil {
@@ -127,7 +130,12 @@ func SelectPosts(db *sql.DB) ([]Post, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+
+		}
+	}(rows)
 
 	var posts []Post
 
@@ -169,4 +177,29 @@ func GetPostById(db *sql.DB, id int) (Post, error) {
 	}
 
 	return post, nil
+}
+
+// UpdatePost - обновление поста по ID
+func UpdatePost(db *sql.DB, id int, title string, description string, sortOrder int) error {
+	result, err := db.Exec(
+		"UPDATE posts SET title = $1, description = $2, sort_order = $3 WHERE id = $4",
+		title,
+		description,
+		sortOrder,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("post not found")
+	}
+
+	return nil
 }

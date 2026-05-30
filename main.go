@@ -185,14 +185,18 @@ func main() {
 	}
 
 	// Создание записи Поста
-	// errCreatePost := database.CreatePost(db, "Заголовок 1", "Описание 1", 1)
-	// if errCreatePost != nil {
-	// 	return
-	// }
-	// errCreatePost = database.CreatePost(db, "Заголовок 2", "Описание 2", 2)
-	// if errCreatePost != nil {
-	// 	return
-	// }
+	errCreatePost := database.CreatePost(db, "Заголовок", "Описание", 1)
+	if errCreatePost != nil {
+		return
+	}
+	errCreatePost = database.CreatePost(db, "Заголовок 1", "Описание 1", 2)
+	if errCreatePost != nil {
+		return
+	}
+	errCreatePost = database.CreatePost(db, "Заголовок 2", "Описание 2", 3)
+	if errCreatePost != nil {
+		return
+	}
 
 	// region Получение всех Постов
 	posts, errPosts := database.SelectPosts(db)
@@ -229,8 +233,31 @@ func main() {
 	}
 
 	fmt.Println(string(jsonPost))
-
 	// endregion Получение Поста
+
+	// region Обновление Поста
+	errUpdatePost := database.UpdatePost(db, 1, "Обновлённый заголовок", "Обновлённое описание", 10)
+
+	if errUpdatePost != nil {
+		log.Println(errUpdatePost)
+		return
+	}
+
+	updatedPost, errUpdatedPost := database.GetPostById(db, 1)
+
+	if errUpdatedPost != nil {
+		log.Println(errUpdatedPost)
+		return
+	}
+
+	jsonUpdatedPost, err := json.MarshalIndent(updatedPost, "", "  ")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	fmt.Println(string(jsonUpdatedPost))
+	// endregion Обновление Поста
 
 	// endregion 6-ой этап
 
