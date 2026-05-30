@@ -203,3 +203,25 @@ func UpdatePost(db *sql.DB, id int, title string, description string, sortOrder 
 
 	return nil
 }
+
+// DeletePost - удаление поста по ID
+func DeletePost(db *sql.DB, id int) error {
+	result, err := db.Exec(
+		"DELETE FROM posts WHERE id = $1",
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("post not found")
+	}
+
+	return nil
+}
