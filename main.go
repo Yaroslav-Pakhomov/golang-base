@@ -260,12 +260,12 @@ func main() {
 	// endregion Обновление Поста
 
 	// region Удаление Поста
-	errDeletePost := database.DeletePost(db, 3)
-
-	if errDeletePost != nil {
-		log.Println(errDeletePost)
-		return
-	}
+	// errDeletePost := database.DeletePost(db, 3)
+	//
+	// if errDeletePost != nil {
+	// 	log.Println(errDeletePost)
+	// 	return
+	// }
 
 	postsAfterDelete, errPostsAfterDelete := database.SelectPosts(db)
 

@@ -15,6 +15,8 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
+var ErrPostNotFound = errors.New("post not found")
+
 // ConnectPostgresDb - создаёт подключение к PostgreSQL
 // и проверяет его через PingContext.
 func ConnectPostgresDb(ctx context.Context, cfg *config.Config) (*sql.DB, error) {
@@ -101,7 +103,18 @@ func CreatePostsTable(db *sql.DB) error {
 
 // CreatePost - создание поста
 func CreatePost(db *sql.DB, title string, description string, sortOrder int) error {
-	_, err := db.Exec(
+
+	// Для новых участков кода лучше рассмотреть BeginTx(ctx, nil).
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	// Откатит транзакцию при ошибке до Commit().
+	// После успешного Commit() Rollback() вернёт ошибку, которую можно игнорировать.
+	defer tx.Rollback()
+
+	_, err = tx.Exec(
 		"INSERT INTO posts (title, description, sort_order) VALUES ($1, $2, $3)",
 		title,
 		description,
@@ -109,10 +122,11 @@ func CreatePost(db *sql.DB, title string, description string, sortOrder int) err
 	)
 
 	if err != nil {
-		return err
+		return err // Rollback выполнится через defer.
 	}
 
-	return nil
+	// После успешного Commit() defer Rollback() безопасно проигнорируется.
+	return tx.Commit()
 }
 
 type Post struct {
@@ -169,7 +183,7 @@ func GetPostById(db *sql.DB, id int) (Post, error) {
 	err := row.Scan(&post.ID, &post.Title, &post.Description, &post.SortOrder, &post.CreatedAt)
 
 	if errors.Is(err, sql.ErrNoRows) {
-		return Post{}, fmt.Errorf("post not found")
+		return Post{}, ErrPostNotFound
 	}
 
 	if err != nil {
@@ -181,7 +195,17 @@ func GetPostById(db *sql.DB, id int) (Post, error) {
 
 // UpdatePost - обновление поста по ID
 func UpdatePost(db *sql.DB, id int, title string, description string, sortOrder int) error {
-	result, err := db.Exec(
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	// Откатит транзакцию при ошибке до Commit().
+	// После успешного Commit() Rollback() вернёт ошибку, которую можно игнорировать.
+	defer tx.Rollback()
+
+	result, err := tx.Exec(
 		"UPDATE posts SET title = $1, description = $2, sort_order = $3 WHERE id = $4",
 		title,
 		description,
@@ -198,10 +222,11 @@ func UpdatePost(db *sql.DB, id int, title string, description string, sortOrder 
 	}
 
 	if rowsAffected == 0 {
-		return fmt.Errorf("post not found")
+		return ErrPostNotFound
 	}
 
-	return nil
+	// После успешного Commit() defer Rollback() безопасно проигнорируется.
+	return tx.Commit()
 }
 
 // DeletePost - удаление поста по ID
@@ -220,7 +245,7 @@ func DeletePost(db *sql.DB, id int) error {
 	}
 
 	if rowsAffected == 0 {
-		return fmt.Errorf("post not found")
+		return ErrPostNotFound
 	}
 
 	return nil
