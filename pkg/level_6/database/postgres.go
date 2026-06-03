@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"time"
 
 	// Конфиг приложения с данными для подключения к БД
 	"golang-base/pkg/level_6/config"
@@ -14,8 +13,6 @@ import (
 	// Через "_" импортируется только init() драйвера.
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
-
-var ErrPostNotFound = errors.New("post not found")
 
 // ConnectPostgresDb - создаёт подключение к PostgreSQL
 // и проверяет его через PingContext.
@@ -127,14 +124,6 @@ func CreatePost(db *sql.DB, title string, description string, sortOrder int) err
 
 	// После успешного Commit() defer Rollback() безопасно проигнорируется.
 	return tx.Commit()
-}
-
-type Post struct {
-	ID          int       `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	SortOrder   int       `json:"sort_order"`
-	CreatedAt   time.Time `json:"created_at"`
 }
 
 // SelectPosts - получение всех постов
